@@ -15,8 +15,8 @@ class Student extends Component{
 			<div>{studentArray}</div>
 				
 			)
-			}
-			}
+		}
+	}
 	
 
 
