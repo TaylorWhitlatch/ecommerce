@@ -13,10 +13,12 @@ class NavBar extends Component{
 	              <div className="container-fluid navbar-white">
 	              	<div className="container">
 		               <ul className="nav navbar-nav">
+		               		
 		                	<li>Home</li>
 		                	<li>Shop</li>
 		                	<li>About Us</li>
 		                	<li>Contact Us</li>
+		                
 
 		               	</ul>
 	                </div>
