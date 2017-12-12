@@ -4,11 +4,18 @@ import './index.css';
 import App from './App';
 
 import { createStore, applyMiddleware } from 'redux';
-import RootReducer from './reducers/RootReducer'
-import reduxPromise from './reduxPromise'
+import RootReducer from './reducers/RootReducer';
+import reduxPromise from 'redux-promise';
+import { Provider } from 'react-redux';
+
+const theStore = applyMiddleware(reduxPromise)(createStore)(RootReducer)
 
 
-ReactDOM.render(<App />,
+
+ReactDOM.render(
+	<Provider>
+		<App />
+	</Provider>,
 	document.getElementById('root'
 		));
 
