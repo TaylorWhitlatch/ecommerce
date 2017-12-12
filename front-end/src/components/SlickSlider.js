@@ -14,7 +14,8 @@ class SlickSlider extends Component{
 			slidesToShow:1,
 			slidesToScroll:1,
 			autoplay: true,
-			arrows: true
+			arrows: true,
+			accessibility: true
 			
 		
 		}
