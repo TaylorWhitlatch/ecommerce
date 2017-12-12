@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 
 class Student extends Component{
+
 	render(){
 		var students = [
-		'Casey',
-		'Jamie',
-		'Valerie',
-		'Eddie'
+			'Casey',
+			'Eddie',
+			'Jamie',
+			'Valerie'
 		];
 		var studentArray = students.map((student)=>{
 			return (<li>{student}</li>)
 		})
-		return (
-			<div>{studentArray}</div>
-				
-			)
-		}
+		return(
+			<div>
+				{studentArray}
+			</div>
+		)
 	}
-	
+}
 
-
-export default Student
+export default Student;
