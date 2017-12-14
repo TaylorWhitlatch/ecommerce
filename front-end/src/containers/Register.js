@@ -1,17 +1,61 @@
 import React, { Component } from 'react';
 import {Form, FormGroup, ControlLabel, FormControl, Button, Col, MenuItem} from 'react-bootstrap';
+import { connect } from 'react-redux';
+// we need bindActionCreators so that we can correlate an action to the dispatcher
+// It's down below inside of mapDispatchToProps
+import { bindActionCreators } from 'redux';
+import AuthAction from '../actions/AuthAction';
 
 class Register extends Component{
 	constructor(){
 		super();
 		this.state = {
-			
+			error:""
 		}
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	componentWillReceiveProps(newProps){
+		console.log(this.props);
+		console.log(newProps);
+		console.log("nnnsknfksan")
+		if(newProps.auth.msg === "registerSuccess"){
+			// the user was inserted. 
+			// We have the token and name safely in the auth reducer.
+			// Move them to the home page.
+			newProps.history.push('/');
+			// line above: tell teh router to move them forward to /
+		}else if(newProps.auth.msg === "userExists"){
+			this.setState({
+				error:"This email is registered"
+			})
+		}
+
+		
+	}
+
+
+	handleSubmit(event){
+		event.preventDefault();
+		var formData = {
+			name: event.target[0].value,
+			email: event.target[1].value,
+			accountType: event.target[2].value,
+			password: event.target[3].value,
+			city: event.target[4].value,
+			state: event.target[5].value,
+			salesRep: event.target[6].value
+		}
+		console.log(formData);
+		this.props.authAction(formData);
 	}
 
 	render(){
+		console.log(this.props.auth);
+
 		return(
-			<Form horizontal>
+			<Form horizontal onSubmit={this.handleSubmit}>
+			<h1>{this.state.error}</h1>
 	        <FormGroup controlId="formHorizontalName" validationState={this.state.nameError}>
 	            <Col componentClass={ControlLabel} sm={2}>
 	                Name
@@ -80,5 +124,26 @@ class Register extends Component{
 	}
 }
 
-export default Register;
+function mapStateToProps(state){
+	// state = RootReducer
+	return{
+		// key = this.props.KEY will be accesible to this component
+		// value = property of RootReducer
+		auth: state.auth
+	}
+}
 
+function mapDispatchToProps(dispatch){
+	// dispatch is teh thing that takes any action
+	// and sends it out to all teh reducers	
+	return bindActionCreators({
+		authAction: AuthAction
+	}, dispatch)
+}
+
+// export default Register;
+console.log(connect);
+// var connectWithReduxFunction = connect(mapStateToProps,mapDispatchToProps);
+// var componentThatKnowsAboutRedux = connectWithReduxFunction(Register)
+export default connect(mapStateToProps,mapDispatchToProps)(Register);
+// export default componentThatKnowsAboutRedux;
