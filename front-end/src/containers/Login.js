@@ -1,44 +1,52 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Form, FormGroup, ControlLabel, FormControl, Button, Col ,MenuItem} from 'react-bootstrap'
+// this is a container that knows abotu redux so...
 import {connect} from 'react-redux';
-import {bindActionCreators } from 'redux'
-import LoginAction from '../actions/LoginAction'
+// we need bindActionCreators because we have redux actions that will dispatch
+import {bindActionCreators} from 'redux';
+import LoginAction from '../actions/LoginAction';
 
+class Login extends Component{
+  constructor(){
+    super();
+    this.state = {
+      error: ""
+    }
+    // if we need to use "this" in a non-lifecycle method (one we created 
+    // such as handleSubmit) we have to bind the method
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }	
 
-class Login extends Component {
-	constructor(){
-		super();
-		this.state = {
-
-		}
-		this.handleSubmit = this.handleSubmit.bind(this)
+  componentWillReceiveProps(newProps){
+	if(newProps.auth.msg === "wrongPassword"){
+		this.setState({
+			error: "This password does not match."
+		});
+	}else if(newProps.auth.msg === "badUser"){
+		this.setState({
+			error: "We do not have an account for this email address."
+		})
+	}else if(newProps.auth.msg === "loginSuccess"){
+		// usr has logged in. Move them on
+		newProps.history.push('/');
 	}
-	handleSubmit(event){
-		event.preventDefault();
-		console.log("handleSubmit running")
-		const email = event.target[0].value
-		const password = event.target[1].value
-		const formData = {
-			email: email,
-			password: password
-		}
-		if(formData.email.length === 0){
+  }
 
-		}else if(formData.password === 2){
-			this.setState({
-				error: "Password field cannont be empty"
-			})
+  handleSubmit(event){
+  	event.preventDefault();
+  	// console.dir(event.target);
+  	const email = event.target[0].value;
+  	const password = event.target[1].value;
+  	const formData = {
+  		email: email,
+  		password: password
+  	}
+  	this.props.loginAction(formData);
+  }
 
-		}else{
-			this.props.loginAction(formData)
-		}
-
-			
-
-
-
-	}
 	render(){
+		console.log(this.props.auth);
+
 		return(
 			<div className="register-wrapper">
 				<h1 className="text-danger">{this.state.error}</h1>
@@ -81,7 +89,8 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 		loginAction: LoginAction
-	}, dispatch)
-	
+	}, dispatch);
 }
+
+// export default Login;
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

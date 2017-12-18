@@ -10,10 +10,61 @@ var bcrypt = require('bcrypt-nodejs');
 // include rand-token for generating a random token
 var randToken = require('rand-token');
 // console.log(randToken.uid(100));
+
 router.post('/login', (req, res, next)=>{
-	console.log(req.body)
-	res.json(req.body)
-})
+	console.log(req.body);
+	const email = req.body.email;
+	const password = req.body.password;
+
+	const checkLoginQuery = `SELECT * FROM users 
+		INNER JOIN customers ON users.cid = customers.customerNumber
+		WHERE users.email = ?`;
+	connection.query(checkLoginQuery, [email], (error, results)=>{
+		if(error){
+			throw error; //dev only
+		}
+		if(results.length === 0){
+			// this user does not exist. Goodbye.
+			res.json({
+				msg: 'badUser'
+			})
+		}else{
+			// this email is valid, see if the password is...
+			// password is the english they gave us on the form
+			// results[0].password is what we have for this user in the DB
+			const checkHash = bcrypt.compareSync(password, results[0].password)
+			const name = results[0].customerName;
+			if(checkHash){
+				// these are the droids we're looking for.
+				// create a new token.
+				// update their row in teh DB with the token
+				// send some json back to react/ajax/axios
+				const newToken = randToken.uid(100);
+				const updateToken = `UPDATE users SET token = ?
+					WHERE email = ?`
+				connection.query(updateToken,[newToken, email],(error)=>{
+					if(error){
+						throw error;
+					}else{
+						res.json({
+							msg: "loginSuccess",
+							token: newToken,
+							name: name
+						});						
+					}
+				})
+			}else{
+				// you dont want to sell me deathsticks. You want to go home
+				// and rethink your life.
+				res.json({
+					msg: "wrongPassword"
+				}) 
+			}
+		}
+	})
+
+	// res.json(req.body);
+});
 
 router.post('/register', (req,res,next)=>{
 	console.log(req.body);
@@ -108,6 +159,75 @@ router.post('/register', (req,res,next)=>{
 		}
 	)
 })
+
+router.get('/productlines/get', (req, res, next)=>{
+	const selectQuery = `SELECT * FROM productlines`;
+	connection.query(selectQuery,(error, results)=>{
+		if(error){
+			throw error; //dev only
+		}else{
+			res.json(results)
+		}
+	})
+});
+
+router.get('/productlines/:productline/get',(req, res, next)=>{
+	const pl = req.params.productline
+	var plQuery = `SELECT * FROM productlines
+		INNER JOIN products ON productlines.productLine = products.productLine
+		WHERE productlines.productline = ?` 
+	connection.query(plQuery,[pl],(error,results)=>{
+		if (error){
+			throw error //dev only
+		}else{
+			res.json(results);
+		}
+	})
+});
+
+router.post('/updateCart', (req, res, next)=>{
+	const productCode = req.body.productCode;
+	const userToken = req.body.userToken;
+	// FIRST... is this even a valid token?
+	const getUidQuery = `SELECT id from users WHERE token = ?;`;
+	connection.query(getUidQuery,[userToken],(error, results)=>{
+		if(error){
+			throw error; //dev only
+		}else if(results.length === 0){
+			// THIS TOKEN IS BAD. USER IS CONFUSED OR A LIAR
+			res.json({
+				msg:"badToken"
+			});
+		}else{
+			// Get the user's id for the last query
+			const uid = results[0].id;
+			// this is a good token. I know who this is now. 
+			const addToCartQuery = `INSERT into cart (uid, productCode)
+				VALUES (?,?);`;
+			connection.query(addToCartQuery,[uid,productCode],(error)=>{
+				if(error){
+					throw error;
+				}else{
+					// the insert worked.
+					// get the sum of their products and their total
+					const getCartTotals = `SELECT SUM(buyPrice) as totalPrice, count(buyPrice) as totalItems 
+						FROM cart
+						INNER JOIN products ON products.productCode = cart.productCode
+						WHERE cart.uid = ?;`;
+					connection.query(getCartTotals,[uid],(error,cartResults)=>{
+						if(error){
+							throw error;
+						}else{
+							res.json(cartResults);
+						}
+					})
+				}
+			});
+		}
+	});
+
+	// res.json(req.body)
+});
 
 
 module.exports = router;
