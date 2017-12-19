@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default function(userToken, productCode){
-	console.log(userToken, productCode)
+	
 	
 	const thePromise = axios({
 		method: "POST",

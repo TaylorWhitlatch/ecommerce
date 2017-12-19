@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import GetProductLines from '../actions/GetProductLines';
 import {bindActionCreators} from 'redux';
 import LoginAction from '../actions/LoginAction';
-
+import GetCart from '../actions/GetCart';
 
 class NavBar extends Component{
 	constructor(){
@@ -22,22 +22,20 @@ class NavBar extends Component{
 
 	// onLogin we need to update the Cart
 	componentWillReceiveProps(newProps){
-		console.log(newProps);
-	
 	}
 
 	render(){
-		// console.log(this.props.cart);
-		console.log(this.props.auth);
+		console.log(this.props.cart);
+		// console.log(this.props.auth);
 		if(this.props.auth.name !== undefined){
 			// the user is logged in
-			if(this.props.cart.length > 0){
+			if(this.props.cart.totalPrice !== undefined){
 				// there is something in this user's cart.
-				const totalPrice = this.props.cart[0].totalPrice;
-				const totalItems = this.props.cart[0].totalItems;
+				const totalPrice = this.props.cart.totalPrice;
+				const totalItems = this.props.cart.totalItems;
 				var cartText = `(${totalItems}) items in your cart | ($${totalPrice})`
 			}else{
-				var cartText = "Your cart is empty"
+				cartText = "Your cart is empty"
 			}
 			var rightMenuBar = [
 				<li key={1} className="">Welcome, {this.props.auth.name}</li>,
@@ -45,8 +43,8 @@ class NavBar extends Component{
 				<li key={3}><Link to="/logout">Logout</Link></li>
 			]
 		}else{
-			var rightMenuBar = [
-				<li><button className="btn btn-primary" onClick={this.fakeLogin}>FAKE LOGIN</button></li>,
+			rightMenuBar = [
+				<li key={0}><button className="btn btn-primary" onClick={this.fakeLogin}>FAKE LOGIN</button></li>,
 			    <li key={1}><Link to="/login">Sign in</Link> or <Link to="/register">Create an account</Link></li>,
 			    <li key={2}>(0) items in cart | ($0.00)</li>
 			]
@@ -57,7 +55,7 @@ class NavBar extends Component{
 			const safeLink = encodeURIComponent(pl.productLine);
 			return(<Link key={index} to={`/shop/${safeLink}`}>{pl.productLine}</Link>)
 		})
-		console.log(shopMenu)
+		// console.log(shopMenu)
 		return(
 			<div id="navbar">
 				<nav className="navbar navbar-fixed-top">
@@ -108,7 +106,7 @@ function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 		getProductLines: GetProductLines,
 		loginAction: LoginAction,
-		
+		getCart: GetCart
 	},dispatch);
 }
 

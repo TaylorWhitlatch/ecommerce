@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, FormGroup, ControlLabel, FormControl, Button, Col ,MenuItem} from 'react-bootstrap'
+import { Form, FormGroup, ControlLabel, FormControl, Button, Col } from 'react-bootstrap'
 // this is a container that knows abotu redux so...
 import {connect} from 'react-redux';
 // we need bindActionCreators because we have redux actions that will dispatch
@@ -47,7 +47,7 @@ class Login extends Component{
   }
 
 	render(){
-		console.log(this.props.auth);
+		
 
 		return(
 			<div className="register-wrapper">
@@ -61,7 +61,7 @@ class Login extends Component{
 							<FormControl required="true" type="email" name="email" placeholder="Email" />
 						</Col>
 					</FormGroup>
-					<FormGroup controlId="formHorizontalName" validationState={this.state.emailError}>
+					<FormGroup controlId="formHorizontalPassWord" validationState={this.state.emailError}>
 						<Col componentClass={ControlLabel} sm={2}>
 							Password
 						</Col>

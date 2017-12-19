@@ -4,7 +4,7 @@
 import axios from 'axios';
 
 export default function(formData){
-	console.log("Auth Action is running...")
+	
 	console.log(formData);
 	var axiosPromise = axios({
 		method: "POST",

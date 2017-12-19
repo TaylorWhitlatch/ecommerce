@@ -1,6 +1,7 @@
 export default function(){
 	return{
-		type:"LOGOUT"
+		type:"LOGOUT",
+		
 
 	}
 

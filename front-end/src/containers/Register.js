@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Form, FormGroup, ControlLabel, FormControl, Button, Col, MenuItem} from 'react-bootstrap';
+import {Form, FormGroup, ControlLabel, FormControl, Button, Col} from 'react-bootstrap';
 import { connect } from 'react-redux';
 // we need bindActionCreators so that we can correlate an action to the dispatcher
 // It's down below inside of mapDispatchToProps
@@ -16,9 +16,7 @@ class Register extends Component{
 	}
 
 	componentWillReceiveProps(newProps){
-		console.log(this.props);
-		console.log(newProps);
-		console.log("nnnsknfksan")
+		
 		if(newProps.auth.msg === "registerSuccess"){
 			// the user was inserted. 
 			// We have the token and name safely in the auth reducer.
@@ -46,12 +44,12 @@ class Register extends Component{
 			state: event.target[5].value,
 			salesRep: event.target[6].value
 		}
-		console.log(formData);
+		
 		this.props.authAction(formData);
 	}
 
 	render(){
-		console.log(this.props.auth);
+		
 
 		return(
 			<Form horizontal onSubmit={this.handleSubmit}>
@@ -64,7 +62,7 @@ class Register extends Component{
 	                <FormControl type="text" name="fullName" placeholder="Full Name" />
 	            </Col>
 	        </FormGroup>
-	        <FormGroup controlId="formHorizontalName" validationState={this.state.emailError}>
+	        <FormGroup controlId="formHorizontalEmail" validationState={this.state.emailError}>
 	            <Col componentClass={ControlLabel} sm={2}>
 	                Email
 	            </Col>
@@ -72,7 +70,7 @@ class Register extends Component{
 	                <FormControl type="email" name="email" placeholder="Email" />
 	            </Col>
 	        </FormGroup>
-	        <FormGroup controlId="formHorizontalName">
+	        <FormGroup controlId="formHorizontalAccount">
 	            <Col componentClass={ControlLabel} sm={2}>
 	                Account Type
 	            </Col>
@@ -80,7 +78,7 @@ class Register extends Component{
 	                <FormControl type="text" name="type" value="customer" disabled />
 	            </Col>
 	        </FormGroup>
-	        <FormGroup controlId="formHorizontalName">
+	        <FormGroup controlId="formHorizontalPassword">
 	            <Col componentClass={ControlLabel} sm={2}>
 	                Password
 	            </Col>
@@ -88,7 +86,7 @@ class Register extends Component{
 	                <FormControl type="password" name="password" placeholder="Password" />
 	            </Col>
 	        </FormGroup>
-	        <FormGroup controlId="formHorizontalName">
+	        <FormGroup controlId="formHorizontalCity">
 	            <Col componentClass={ControlLabel} sm={2}>
 	                City
 	            </Col>
@@ -96,7 +94,7 @@ class Register extends Component{
 	                <FormControl type="text" name="city" placeholder="City" />
 	            </Col>
 	        </FormGroup>
-	        <FormGroup controlId="formHorizontalName">
+	        <FormGroup controlId="formHorizontalState">
 	            <Col componentClass={ControlLabel} sm={2}>
 	                State
 	            </Col>
@@ -104,7 +102,7 @@ class Register extends Component{
 	                <FormControl type="text" name="state" placeholder="State" />
 	            </Col>
 	        </FormGroup>
-	        <FormGroup controlId="formHorizontalName">
+	        <FormGroup controlId="formHorizontalSalesRep">
 	            <Col componentClass={ControlLabel} sm={2}>
 	                Sales Rep
 	            </Col>
@@ -142,7 +140,7 @@ function mapDispatchToProps(dispatch){
 }
 
 // export default Register;
-console.log(connect);
+
 // var connectWithReduxFunction = connect(mapStateToProps,mapDispatchToProps);
 // var componentThatKnowsAboutRedux = connectWithReduxFunction(Register)
 export default connect(mapStateToProps,mapDispatchToProps)(Register);
